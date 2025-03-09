@@ -16,5 +16,5 @@ app.use("/user", userroutes);
 
 
 
-const PORT = 3005;
+const PORT = 3006;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

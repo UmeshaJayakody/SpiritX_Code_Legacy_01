@@ -59,23 +59,22 @@ const Signup = () => {
   // Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const newErrors = {};
     if (!username) newErrors.username = "Username is required";
     if (!password) newErrors.password = "Password is required";
-    if (!confirmPassword)
-      newErrors.confirmPassword = "Confirm Password is required";
-
+    if (!confirmPassword) newErrors.confirmPassword = "Confirm Password is required";
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
+  
     if (username.length < 8) {
       setErrors({ username: "Username must be at least 8 characters" });
       return;
     }
-
+  
     if (
       !/[a-z]/.test(password) ||
       !/[A-Z]/.test(password) ||
@@ -86,27 +85,27 @@ const Signup = () => {
       });
       return;
     }
-
+  
     if (password !== confirmPassword) {
       setErrors({ confirmPassword: "Passwords must match" });
       return;
     }
-
+  
     try {
-      const response = await fetch("http://localhost:3005/user/register", {
+      const response = await fetch("http://localhost:3006/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, password }),
-        
       });
+  
       const data = await response.json();
-
+  
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message);
+        throw new Error(data.message || "Signup failed");
       }
+  
       alert("Signup successful! Redirecting to login...");
       setTimeout(() => navigate("/"), 2000);
     } catch (error) {
@@ -114,7 +113,6 @@ const Signup = () => {
       console.error("Signup failed", error);
     }
   };
-
   const isFormInvalid = Object.keys(errors).length > 0 || !username || !password || !confirmPassword;
 
   return (

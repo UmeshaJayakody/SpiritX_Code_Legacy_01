@@ -15,19 +15,22 @@ export const registerUser = async (req, res) => {
   }
 
   try {
-    // Check if the user already exists
-    const existingUser = await getUserByEmailAndPassword(username, password); // Adjust this if needed for checking username
+    const existingUser = await getUserByEmail(username);
     if (existingUser) {
-      return res.status(400).send('User with this username already exists');
+      return res.status(400).json({ message: 'User with this username already exists' });
     }
 
-    // Hash the password before saving it to the database
-    const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds for bcrypt
-
-    // Save the new user to the database
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await createUser(username, hashedPassword);
 
-    res.status(201).json({ message: 'User registered successfully', user: newUser });
+    // Send only necessary user information to avoid circular references
+    const userResponse = {
+      id: newUser.id,
+      username: newUser.username,
+      // Add other necessary fields here
+    };
+
+    res.status(201).json({ message: 'User registered successfully', user: userResponse });
   } catch (err) {
     console.error(err);
     res.status(500).send('Failed to register user');

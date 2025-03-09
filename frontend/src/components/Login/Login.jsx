@@ -24,7 +24,7 @@ const Login = () => {
     if (!validate()) return;
   
     try {
-      const response = await fetch('http://localhost:3005/user/login', {
+      const response = await fetch('http://localhost:3006/user/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
